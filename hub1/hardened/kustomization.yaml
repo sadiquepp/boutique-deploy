@@ -1,0 +1,96 @@
+# Online Boutique, hardened base set, as deployed on hub1.
+#
+# Everything here is cluster-specific by design -- that is what this repository
+# is for. The structure comes from sadiquepp/openshift, which keeps placeholder
+# values; the real registry and the digest per service live here.
+#
+# HOW THE IMAGE OVERRIDE WORKS, because it is not obvious:
+#
+# The base overlay already rewrites every image to
+# registry.example.com:8443/online-boutique/<service>:v0.10.6. A parent
+# kustomization's `images:` matches on the name AS IT IS AFTER that rewrite,
+# NOT on upstream's us-central1-docker.pkg.dev name. Keying on the upstream
+# name silently matches nothing and the placeholder registry survives into the
+# cluster, where it fails as ImagePullBackOff. Verified by rendering both ways.
+#
+# So each entry below does two jobs at once: point at the real registry
+# (newName) and pin the exact image (digest). No separate set-registry.sh step,
+# and no deploy branch of the upstream repository.
+#
+# digest and newTag are mutually exclusive -- a digest replaces the tag
+# entirely, so the rendered reference is <newName>@sha256:...
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  # Remote base. ref=main follows that branch, so a change to the overlay's
+  # STRUCTURE arrives here without a commit. Pin a tag or commit instead if you
+  # want that to be deliberate -- the trade-off is a second commit whenever the
+  # overlay legitimately changes shape.
+  #
+  # Argo CD's repo-server fetches this over HTTPS from github.com. On a
+  # disconnected cluster it cannot, and the answer there is to commit rendered
+  # manifests (kustomize build output) instead of a remote base.
+  - github.com/sadiquepp/openshift//test-workloads/online-boutique/overlays/hardened?ref=main
+
+# Overrides the namespace the upstream overlay sets, so that overlay needs no
+# per-cluster copy.
+namespace: boutique-hi
+
+patches:
+  # The upstream overlay creates its own Namespace, which is cluster-scoped and
+  # belongs to the platform admin (pipelines/gitops/01-namespaces.yaml in the
+  # upstream repo creates it, labelled for the default Argo CD instance).
+  - target:
+      kind: Namespace
+    patch: |
+      $patch: delete
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: online-boutique
+
+# The upstream overlay sets imagePullPolicy: Always, which a digest makes
+# unnecessary -- a digest cannot point at different content. Harmless: it costs
+# one registry round-trip per pod start. Left in place rather than patched out,
+# so this file stays a pure image-and-namespace override.
+images:
+  - name: registry.example.com:8443/online-boutique/adservice
+    newName: registry.hub.mylab.com:8443/online-boutique/adservice
+    digest: sha256:8e04dc17b3e3f11ba0c4f0b743a64af745b80b28a228017bd25a880b40c73511
+  - name: registry.example.com:8443/online-boutique/cartservice
+    newName: registry.hub.mylab.com:8443/online-boutique/cartservice
+    digest: sha256:a2892deb73ad6e49c9d396f986a3ebfbef3d591d7a138e0e1012ea19c6af5046
+  - name: registry.example.com:8443/online-boutique/checkoutservice
+    newName: registry.hub.mylab.com:8443/online-boutique/checkoutservice
+    digest: sha256:761530ad2f8e21fb639c76abd7342d10481e4451a43251f4a92de8839a8efb39
+  - name: registry.example.com:8443/online-boutique/currencyservice
+    newName: registry.hub.mylab.com:8443/online-boutique/currencyservice
+    digest: sha256:5edcec9f31f504fa6bea714bf264cc5a8b9fadc3e7e3859d7da1005eef520a5c
+  - name: registry.example.com:8443/online-boutique/emailservice
+    newName: registry.hub.mylab.com:8443/online-boutique/emailservice
+    digest: sha256:033126206251b39912adb055211f3b1bf086efeeb1569cea5940624da9276c3a
+  - name: registry.example.com:8443/online-boutique/frontend
+    newName: registry.hub.mylab.com:8443/online-boutique/frontend
+    digest: sha256:85a80b3d3abf2fedfda64bfccfffe22771febd42675a1d3f35ba73ff719bf046
+  - name: registry.example.com:8443/online-boutique/loadgenerator
+    newName: registry.hub.mylab.com:8443/online-boutique/loadgenerator
+    digest: sha256:78a6e700e3238d0e8e23a4b92c53919ee33b08077b1b82dd9e182d5ff625d2f6
+  - name: registry.example.com:8443/online-boutique/paymentservice
+    newName: registry.hub.mylab.com:8443/online-boutique/paymentservice
+    digest: sha256:265854b7133568dae6312cb7c16951b6784d47736877cfe67014500760a02826
+  - name: registry.example.com:8443/online-boutique/productcatalogservice
+    newName: registry.hub.mylab.com:8443/online-boutique/productcatalogservice
+    digest: sha256:98e1e6520ead11f382e4d220cec8c1ffef76c36539cf48cd0517e0b3e89ecd55
+  - name: registry.example.com:8443/online-boutique/recommendationservice
+    newName: registry.hub.mylab.com:8443/online-boutique/recommendationservice
+    digest: sha256:83dcae9a00b90f46f90895959646d6a59041984d10245d065df3ed349598530f
+  - name: registry.example.com:8443/online-boutique/shippingservice
+    newName: registry.hub.mylab.com:8443/online-boutique/shippingservice
+    digest: sha256:b41bad71da3339d8081f4637325ba2c1e2dbb9cdcd145b07b35434a8f1696d73
+  # cache is MIRRORED rather than built (CACHE_BUILD=0 upstream), so no
+  # pipeline run produces a digest for it. Tag-pinned until it is built or
+  # mirrored by a pipeline step that reports one.
+  - name: registry.example.com:8443/online-boutique/cache
+    newName: registry.hub.mylab.com:8443/online-boutique/cache
+    newTag: v0.10.6
