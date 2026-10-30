@@ -57,37 +57,37 @@ patches:
 images:
   - name: registry.example.com:8443/online-boutique/adservice
     newName: registry.hub.mylab.com:8443/online-boutique/adservice
-    digest: sha256:8e04dc17b3e3f11ba0c4f0b743a64af745b80b28a228017bd25a880b40c73511
+    digest: sha256:40c9a1c40d9e151abd6b98c1ba3751e567c13582e952bbbb6be0bcc05baff53b
   - name: registry.example.com:8443/online-boutique/cartservice
     newName: registry.hub.mylab.com:8443/online-boutique/cartservice
-    digest: sha256:a2892deb73ad6e49c9d396f986a3ebfbef3d591d7a138e0e1012ea19c6af5046
+    digest: sha256:33460fc70bb92a9bf553cfcd71defc35a53cedf3882ee30e074082e4270b6fc3
   - name: registry.example.com:8443/online-boutique/checkoutservice
     newName: registry.hub.mylab.com:8443/online-boutique/checkoutservice
-    digest: sha256:761530ad2f8e21fb639c76abd7342d10481e4451a43251f4a92de8839a8efb39
+    digest: sha256:82cd2ef0202d5586dc72b6db8b9784125cfd491317e37ff4c62cd65fa961c904
   - name: registry.example.com:8443/online-boutique/currencyservice
     newName: registry.hub.mylab.com:8443/online-boutique/currencyservice
-    digest: sha256:5edcec9f31f504fa6bea714bf264cc5a8b9fadc3e7e3859d7da1005eef520a5c
+    digest: sha256:dcfa0b9e858951f9642e3aa6b807a64b716cda711e3ce178b9a33981b8e92a7f
   - name: registry.example.com:8443/online-boutique/emailservice
     newName: registry.hub.mylab.com:8443/online-boutique/emailservice
-    digest: sha256:033126206251b39912adb055211f3b1bf086efeeb1569cea5940624da9276c3a
+    digest: sha256:70b0dfa31d598e86b9290c5601e565e18f700e3a9d3ee2b75a1b63107f2a0e98
   - name: registry.example.com:8443/online-boutique/frontend
     newName: registry.hub.mylab.com:8443/online-boutique/frontend
-    digest: sha256:85a80b3d3abf2fedfda64bfccfffe22771febd42675a1d3f35ba73ff719bf046
+    digest: sha256:7ffae880aefc0aa14b15f1aeddc1d419d7feaec6fb264e77bbf82c45bef546a5
   - name: registry.example.com:8443/online-boutique/loadgenerator
     newName: registry.hub.mylab.com:8443/online-boutique/loadgenerator
-    digest: sha256:78a6e700e3238d0e8e23a4b92c53919ee33b08077b1b82dd9e182d5ff625d2f6
+    digest: sha256:128cae78c325b882f7abd113157e452cd6bb02566f0807fea55da298374aad0d
   - name: registry.example.com:8443/online-boutique/paymentservice
     newName: registry.hub.mylab.com:8443/online-boutique/paymentservice
-    digest: sha256:265854b7133568dae6312cb7c16951b6784d47736877cfe67014500760a02826
+    digest: sha256:c447e8fe717b538ffeba5bd7b3cb2d33c186375186651fb6c029ae60f2682104
   - name: registry.example.com:8443/online-boutique/productcatalogservice
     newName: registry.hub.mylab.com:8443/online-boutique/productcatalogservice
-    digest: sha256:98e1e6520ead11f382e4d220cec8c1ffef76c36539cf48cd0517e0b3e89ecd55
+    digest: sha256:4ec5c96c073515b6226eed2a83c56f036adfdfd0271d88e4623a9abc0ab9efd9
   - name: registry.example.com:8443/online-boutique/recommendationservice
     newName: registry.hub.mylab.com:8443/online-boutique/recommendationservice
-    digest: sha256:83dcae9a00b90f46f90895959646d6a59041984d10245d065df3ed349598530f
+    digest: sha256:9fc759c448dc1011adfe2c6a1e4c73c2354724dcafd03cde3f86c90c53516639
   - name: registry.example.com:8443/online-boutique/shippingservice
     newName: registry.hub.mylab.com:8443/online-boutique/shippingservice
-    digest: sha256:b41bad71da3339d8081f4637325ba2c1e2dbb9cdcd145b07b35434a8f1696d73
+    digest: sha256:cf880d89c79e1cf861818272f126b05a9524f2933c2a0a7900d84ed55589c5f6
   # cache is MIRRORED rather than built (CACHE_BUILD=0 upstream), so no
   # pipeline run produces a digest for it. Tag-pinned until it is built or
   # mirrored by a pipeline step that reports one.
